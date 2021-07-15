@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nodeapp-test
-        image: jbarosin/nodeapp:dev
+        image: stephanelist/nodeapp:dev
         ports:
         - containerPort: 8000
 
