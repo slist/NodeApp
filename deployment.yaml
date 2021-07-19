@@ -19,6 +19,13 @@ spec:
         image: stephanelist/nodeapp:dev
         ports:
         - containerPort: 8000
+        resources:
+          limits:
+#            cpu: "1"
+            memory: "128Mi"
+          requests:
+            cpu: "0.5"
+            memory: "64Mi"
 
 ---
 apiVersion: v1
