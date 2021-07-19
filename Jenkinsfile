@@ -123,8 +123,7 @@ node {
         }
 
 	stage('Deploy to K8s') {
-		echo "Deploying to microk8s on dev host"
-			sh 'ssh -tt 192.168.1.97'
+		echo "Deploying to K8s"
 			sh 'microk8s.kubectl apply -f /opt/k8s/NodeApp/deployment.yaml'
 			sh 'exit'
 	}
