@@ -121,14 +121,14 @@ node {
 
 
         }
-
+/*
 	stage('Deploy to K8s') {
 		echo "Deploying to K8s"
 			sh 'ssh -tt stephane@192.168.1.97'
 			sh 'microk8s.kubectl apply -f /opt/k8s/NodeApp/deployment.yaml'
 			sh 'exit'
 	}
-
+*/
 /*
         stage('Deploy to dev cluster') {
             app.inside {
