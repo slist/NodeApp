@@ -121,13 +121,14 @@ node {
 
 		stage('Deployment test') {
 			sshagent(['stephane_ssh_key']) {
-			sh "scp -o StrictHostKeyChecking=no deployment.yaml stephane@192.168.1.97:/k8s/dev/"
-			try{
-				sh "ssh stephane@192.168.1.97 microk8s kubectl apply -f /k8s/dev/deployment.yaml && sleep 5"
-			}
-			catch(error){
-				echo "Welp... those didnt exist yet..."
-				sh "ssh stephane@192.168.1.97 microk8s kubectl create -f /k8s/dev/deployment.yaml && sleep 5"
+				sh "scp -o StrictHostKeyChecking=no deployment.yaml stephane@192.168.1.97:/k8s/dev/"
+				try{
+					sh "ssh stephane@192.168.1.97 microk8s kubectl apply -f /k8s/dev/deployment.yaml && sleep 5"
+				}
+				catch(error){
+					echo "Welp... those didnt exist yet..."
+					sh "ssh stephane@192.168.1.97 microk8s kubectl create -f /k8s/dev/deployment.yaml && sleep 5"
+				}
 			}
 		}
 
@@ -138,9 +139,10 @@ node {
 
 		stage('Cleanup') {
 			sshagent(['stephane_ssh_key']) {
-			sh "ssh stephane@192.168.1.97 microk8s kubectl delete deployment nodeapp"
-			sh "ssh stephane@192.168.1.97 microk8s kubectl delete service nodeapp-service"
-			sh "ssh stephane@192.168.1.97 microk8s kubectl get all"
+				sh "ssh stephane@192.168.1.97 microk8s kubectl delete deployment nodeapp"
+				sh "ssh stephane@192.168.1.97 microk8s kubectl delete service nodeapp-service"
+				sh "ssh stephane@192.168.1.97 microk8s kubectl get all"
+			}
 		}
 	}
 }
