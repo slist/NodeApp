@@ -137,6 +137,7 @@ node {
 		}
 
 		stage('Cleanup') {
+			sshagent(['stephane_ssh_key']) {
 			sh "ssh stephane@192.168.1.97 microk8s kubectl delete deployment nodeapp"
 			sh "ssh stephane@192.168.1.97 microk8s kubectl delete service nodeapp-service"
 			sh "ssh stephane@192.168.1.97 microk8s kubectl get all"
