@@ -97,6 +97,19 @@ node {
 		   Comment out this stage if you dont want to send to Slack :(
 		 */
 
+		stage('YAML Deployment lint') {
+			sshagent(['stephane_ssh_key']) {
+				sh "scp -o StrictHostKeyChecking=no deployment.yaml stephane@192.168.1.97:/k8s/dev/"
+				try{
+					sh "ssh stephane@192.168.1.97 yamllint /k8s/dev/deployment.yaml"
+				}
+				catch(error){
+					echo "YAML syntax is incorrect"
+				}
+			}
+		}
+
+
 		stage('Send Validate Results') {
 			blocks_fail = [
 				[
