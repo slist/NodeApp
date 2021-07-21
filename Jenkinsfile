@@ -26,19 +26,6 @@ node {
 		   when there are no violations during 'cbctl validate'
 		 */
 
-		stage('Statical YAML Analyse') {
-			try {
-				echo "Analyse YAML..."
-				sh '/var/jenkins_home/app/cbctl k8s-object validate -f deployment.yaml'
-			}
-			catch (err) {
-				violations = true
-				echo "Build detected cbctl violations. Review Cbctl scan results."
-				slackSend color: "bad", message: "YAML deployment file incorrect! [Jenkins] '${env.JOB_NAME}' ${env.BUILD_URL}"
-			}
-		}
-
-
 		stage('Build image') {
 			/*
 			   Build stage.  Build statically defined image name.
@@ -79,7 +66,7 @@ node {
 		   rules in the slack message.
 		 */
 
-		stage('Validate image') {
+		stage('cbctl image validate') {
 			try {
 				echo "Validate stage... Starting validate test for ${REPO}/${IMAGE}:${TAG}. If there are issues, review ${REPO}_${IMAGE}_validate.json"
 				sh '/var/jenkins_home/app/cbctl image validate ${REPO}/${IMAGE}:${TAG} -o json > ${REPO}_${IMAGE}_validate.json'
@@ -87,8 +74,8 @@ node {
 			}
 			catch (err) {
 				violations = true
-					echo "Build detected cbctl violations. Review Cbctl scan results."
-					sh 'python3 /var/jenkins_home/app/cbctl_validate_helper.py ${REPO}_${IMAGE}_validate.json > cbctl_policy_violations.txt'
+				echo "Build detected cbctl violations. Review Cbctl scan results."
+				sh 'python3 /var/jenkins_home/app/cbctl_validate_helper.py ${REPO}_${IMAGE}_validate.json > cbctl_policy_violations.txt'
 			}
 		}
 
@@ -109,12 +96,18 @@ node {
 			]
 
 			if(violations == false) {
-				slackSend color: "good", message: "No violations! Woohoo! [Jenkins] '${env.JOB_NAME}' ${env.BUILD_URL}"
+				slackSend color: "good", message: "Image is validated! [Jenkins] '${env.JOB_NAME}' ${env.BUILD_URL}"
 			}
 
 			if(violations == true) {
-				slackSend(channel: "#build-alerts", blocks: blocks_fail)
+				slackSend color: "bad", message: "Image is NOT validated! [Jenkins] '${env.JOB_NAME}' ${env.BUILD_URL}"
 				slackUploadFile filePath: "cbctl_policy_violations.txt", initialComment: ""
+				script {
+					def data = readFile(file: 'cbctl_policy_violations.txt')
+					println(data)
+				}
+			}
+
 				echo "Violations occured. results of cbctl validate can be found in ${REPO}/${IMAGE}_validate.json and a summary in 'cbctl_policy_violations.txt'"
 			}
 		}
