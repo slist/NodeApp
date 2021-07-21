@@ -5,7 +5,7 @@ node {
 		   message is sent. */
 		violations = false
 
-		stage('Clone repository') {
+		stage('Clone repository from GitHub') {
 			/* Cloning the Repository to jenkins-docker Workspace */
 			checkout scm
 		}
@@ -26,7 +26,7 @@ node {
 		   when there are no violations during 'cbctl validate'
 		 */
 
-		stage('Build image') {
+		stage('Build container image') {
 			/*
 			   Build stage.  Build statically defined image name.
 			 */
@@ -44,7 +44,7 @@ node {
 			}
 		}
 
-		stage('Push image') {
+		stage('Push image to Docker Hub') {
 			/*
 			   Docker credentials need to be setup in Jenkins.
 			   Make sure that "docker-hub" is the name of the credential ID for your
@@ -81,7 +81,7 @@ node {
 		   Comment out this stage if you dont want to send to Slack :(
 		 */
 
-		stage('Send Validate Results') {
+		stage('Send Slack Message') {
 			blocks_fail = [
 				[
 					"type": "section",
