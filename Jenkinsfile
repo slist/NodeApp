@@ -97,19 +97,6 @@ node {
 		   Comment out this stage if you dont want to send to Slack :(
 		 */
 
-		stage('YAML Deployment lint') {
-			sshagent(['stephane_ssh_key']) {
-				sh "scp -o StrictHostKeyChecking=no deployment.yaml stephane@192.168.1.97:/k8s/dev/"
-				try{
-					sh "ssh stephane@192.168.1.97 yamllint /k8s/dev/deployment.yaml"
-				}
-				catch(error){
-					echo "YAML syntax is incorrect"
-				}
-			}
-		}
-
-
 		stage('Send Validate Results') {
 			blocks_fail = [
 				[
@@ -132,30 +119,5 @@ node {
 			}
 		}
 
-		stage('Deployment test') {
-			sshagent(['stephane_ssh_key']) {
-				sh "scp -o StrictHostKeyChecking=no deployment.yaml stephane@192.168.1.97:/k8s/dev/"
-				try{
-					sh "ssh stephane@192.168.1.97 microk8s kubectl apply -f /k8s/dev/deployment.yaml && sleep 5"
-				}
-				catch(error){
-					echo "Welp... those didnt exist yet..."
-					sh "ssh stephane@192.168.1.97 microk8s kubectl create -f /k8s/dev/deployment.yaml && sleep 5"
-				}
-			}
-		}
-
-		stage('Connection Test') {
-			sh "curl 192.168.1.97:30333"
-			echo "Done testing"
-		}
-
-		stage('Cleanup') {
-			sshagent(['stephane_ssh_key']) {
-				sh "ssh stephane@192.168.1.97 microk8s kubectl delete deployment nodeapp"
-				sh "ssh stephane@192.168.1.97 microk8s kubectl delete service nodeapp-service"
-				sh "ssh stephane@192.168.1.97 microk8s kubectl get all"
-			}
-		}
 	}
 }
