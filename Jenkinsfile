@@ -33,7 +33,6 @@ node {
 			app = docker.build("${REPO}/${IMAGE}:${TAG}")
 		}
 
-
 		stage('Test image') {
 			/*
 			   Test stage.  Not much to see here...
@@ -44,7 +43,6 @@ node {
 				echo "Current build lookin: ${currentBuild.currentResult}"
 			}
 		}
-
 
 		stage('Push image') {
 			/*
@@ -57,7 +55,6 @@ node {
 			}
 			echo "Trying to Push Docker Build to DockerHub"
 		}
-
 
 		/*
 		   Validate new build with cbctl. Outfiles written include the ${IMAGE}_${NAME}_validate.json and the cbctl_policy_violations.txt
@@ -107,10 +104,6 @@ node {
 					println(data)
 				}
 			}
-
-				echo "Violations occured. results of cbctl validate can be found in ${REPO}/${IMAGE}_validate.json and a summary in 'cbctl_policy_violations.txt'"
-			}
 		}
-
 	}
 }
