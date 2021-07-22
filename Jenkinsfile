@@ -14,7 +14,7 @@ node {
 			"BUILD_NUMBER_SCAN_OUTFILE=cbctl_scan_${currentBuild.number}.json",
 			"REPO=stephanelist",
 			"IMAGE=nodeapp",
-			"TAG=dev",
+			"TAG=test",
 			"CBCTL_RESULTS=testing"]){
 
 		/*

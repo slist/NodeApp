@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nodeapp-test
-        image: stephanelist/nodeapp:dev
+        image: stephanelist/nodeapp:test
         ports:
         - containerPort: 8000
         resources:
