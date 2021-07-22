@@ -37,6 +37,11 @@ node {
 			/*
 			   Test stage.  Not much to see here...
 			 */
+			echo "server.js"
+			script {
+				def data = readFile(file: 'server.js')
+				println(data) 
+			}
 
 			app.inside {
 				echo "Tests passed"
